@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= detailsdata["title"]%></title>
+        <link rel="stylesheet" href="/stylesheets/anime.css">
+        <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+        <script src="https://use.fontawesome.com/releases/v5.12.0/js/all.js" data-auto-replace-svg="nest"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="button-layout">
+            <a href="/" class="logo-home"> Home </a>
+            <div class="season-buttons">
+                <a href="/season/<%=curr_year%>/winter" id="Winter" class="season"> 
+                    <div class="season-name">Winter</div>
+                    <div class="season-year"><%=curr_year%></div>
+                </a>
+                <a href="/season/<%=curr_year%>/spring" id="Spring" class="season"> 
+                    <div class="season-name">Spring</div>
+                    <div class="season-year"><%=curr_year%></div>
+                </a>
+                <a href="/season/<%=(curr_year - 1)%>/summer" id="Summer" class="season"> 
+                    <div class="season-name">Summer</div>
+                    <div class="season-year"><%=(curr_year - 1)%></div>
+                </a>
+                <a href="/season/<%=(curr_year - 1)%>/fall" id="Fall" class="season"> 
+                    <div class="season-name">Fall</div>
+                    <div class="season-year"><%=(curr_year - 1)%></div> 
+                </a>
+            </div>
+            <div class="user-options">
+                <%if(!curr_user){%>
+                    <div class="option" style="margin-right: 10px;">
+                        <a href="javascript:void(0)" id="user-name" >
+                            <div class="icon"><i class="far fa-user"></i></div> 
+                            <div class="icon-description">Login</div>
+                        </a>
+                    </div>
+                    <div class="option">
+                        <a href="javascript:void(0)" id="sign-up" >
+                            <div class="icon"><i class="fas fa-user-plus"></i></div> 
+                            <div class="icon-description">Sign Up</div>
+                        </a>
+                    </div>
+                <%} else {%>
+                    <div class="option" style="margin-right: 10px;">
+                        <a href="#" id="user-name">
+                            <div class="icon"><i class="fas fa-user-check"></i></div>
+                            <div class="icon-description">Signed in as <%=curr_user.username%></div>
+                        </a>
+                    </div>
+                    <div class="option" style="margin-right: 10px;">
+                        <a href="/schedule/<%=curr_user.username%>/<%=curr_year%>/<%=season%>" id="user-schedule">
+                                <div class="icon"><i class="far fa-calendar-alt"></i></div>
+                                <div class="icon-description">Schedule</div>
+                        </a>
+                    </div>
+                    <div class="option">
+                        <a href="/logout" id="logout">
+                            <div class="icon"><i class="fas fa-sign-out-alt"></i></div>
+                            <div class="icon-description">Logout</div>
+                        </a>
+                    </div>
+                <%}%>
+            </div>           
+        </div>
+    </div>
+
+    <div class="main-section">
+        <%var image = detailsdata["image_url"]%>
+        <%var insert_index = image.length - 4%>
+        <%var insert = "l"%>
+        <%var largepic = [image.slice(0,insert_index), insert, image.slice(insert_index)].join('')%>
+
+        <div class="header">
+            <div class="container">
+                <div style="position: relative; min-height: 300px;">
+                    <div class="animeCover" style="position: absolute;"><img src="<%=largepic%>" class="cover"></div>
+                </div>
+                
+                <div class="data">
+                    <h1 class="title"><%= detailsdata["title"]%></h1>
+                    <p class="synopsis"><%= detailsdata["synopsis"]%></p>
+                </div>            
+            </div>            
+        </div>
+        <div class="container">
+            <div class="sidebar">
+                <div class="information">
+                    <div class="data-set" id="type">
+                        <div class="type">Format</div>
+                        <div class="value"><%=detailsdata["type"]%></div>
+                    </div>
+                    <div class="data-set" id="source">
+                        <div class="type">Source</div>
+                        <div class="value"><%=detailsdata["source"]%></div>
+                    </div>
+                    <div class="data-set" id="episodes">
+                        <div class="type">Episodes</div>
+                        <div class="value"><%=detailsdata["episodes"]%></div>
+                    </div>
+                    <div class="data-set" id="status">
+                        <div class="type">Status</div>
+                        <div class="value"><%=detailsdata["status"]%></div>
+                    </div>
+                    <div class="data-set" id="airing-start">
+                        <div class="type">Start Date</div>
+                        <div class="value"><%=detailsdata.aired.string%></div>
+                    </div>
+                    <div class="data-set" id="duration">
+                        <div class="type">Episode Duration</div>
+                        <div class="value"><%=detailsdata["duration"]%></div>
+                    </div>
+                    <div class="data-set" id="premiered">
+                        <div class="type">Season</div>
+                        <div class="value"><%=detailsdata["premiered"]%></div>
+                    </div>
+                </div>
+            </div>
+            <div class="overview">
+                <div class="relations"></div>
+                <div class="trailer">
+                    <h2>Trailer</h2>
+                    <iframe src="<%= detailsdata["trailer_url"]%>" frameborder="0" allowfullscreen="allowfullscreen" class="video"></iframe>
+                </div>    
+            </div>
+        </div>
+        
+        
+        
+
+    </div>
+
+
+
+
+</body>
+</html>

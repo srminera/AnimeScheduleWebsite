@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Register</title>
+        <link rel="stylesheet" href="/stylesheets/main.css">
+        <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+        <script src="https://use.fontawesome.com/releases/v5.12.0/js/all.js" data-auto-replace-svg="nest"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+<body>
+
+
+<div class="navbar">
+    <div class="button-layout">
+        <a href="/" class="logo-home"> Home </a>
+        <div class="season-buttons">
+            <a href="/season/<%=curr_year%>/winter" id="Winter" class="season"> 
+                <div class="season-name">Winter</div>
+                <div class="season-year"><%=curr_year%></div>
+            </a>
+            <a href="/season/<%=curr_year%>/spring" id="Spring" class="season"> 
+                <div class="season-name">Spring</div>
+                <div class="season-year"><%=curr_year%></div>
+            </a>
+            <a href="/season/<%=(curr_year - 1)%>/summer" id="Summer" class="season"> 
+                <div class="season-name">Summer</div>
+                <div class="season-year"><%=(curr_year - 1)%></div>
+            </a>
+            <a href="/season/<%=(curr_year - 1)%>/fall" id="Fall" class="season"> 
+                <div class="season-name">Fall</div>
+                <div class="season-year"><%=(curr_year - 1)%></div> 
+            </a>
+        </div>
+        <div class="user-options">
+                <div class="option" style="margin-right: 10px;">
+                    <a href="/login" id="user-name" >
+                        <div class="icon"><i class="far fa-user"></i></div> 
+                        <div class="icon-description">Login</div>
+                    </a>
+                </div>
+            </div>           
+        </div>
+    </div>
+</div>
+
+<div class="main-section">
+    <div class="auth">
+        <form action="/register" method="post">
+            <input type="text" name="username" placeholder="username">
+            <input type="password" name="password" placeholder="password">
+            <button>Sign Up</button>
+        </form> 
+    </div>    
+</div>
+
+
+
+
+</body>
+</html>

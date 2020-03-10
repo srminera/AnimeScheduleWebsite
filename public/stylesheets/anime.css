@@ -1,0 +1,166 @@
+*, :after, :before {
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    min-height: 100%;
+    background-color: rgb(19, 23, 29);
+    color: #ffff;
+}
+
+div {
+    display: block;
+}
+
+
+a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+section {
+    margin-bottom: 60px;
+    width: fit-content;
+}
+
+h1 {
+    font-size: 1.9rem;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: 400;
+}
+
+h2 {
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    font-size: 1.9rem;
+    font-weight: 400;
+}
+
+.navbar {
+    height: 130px;
+    width: 100%;
+    padding-top: 40px;
+    position: relative;
+    background-color: #3F3F51;
+}
+
+.alert {
+    display: block;
+    text-align: center;
+    margin: 145px 20% 30px;
+    background: lightslategrey;
+}
+
+.button-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-items: center;
+    margin: 0 12vw;
+    position: relative;
+}
+
+.season-buttons {
+    display: flex;
+}
+
+.user-options {
+    display: flex;
+}
+.season {
+    text-align: center;
+    width: 9rem;
+}
+
+.season-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.season-year {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: cornflowerblue;
+}
+
+.option .icon {
+    text-align: center;
+}
+
+.main-section {
+    background-color: rgb(19, 23, 29);
+    position: relative;
+    z-index: 60;
+}
+
+
+.container {
+    margin: 0 auto;
+    min-width: 320px;
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+    display: grid;
+    grid-template-columns: 400px auto;
+    grid-column-gap: 40px;
+
+}
+
+.cover {
+    padding-top: 30px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.sidebar {
+    margin-top: 325px;
+}
+
+.information {
+    max-width: 400px;
+    padding: 20px;
+    background-color: #3F3F51;
+}
+
+.value {
+    color: cornflowerblue;
+    padding-bottom: 10px;
+}
+
+.video {
+    height: 400px;
+    width: 100%;
+}
+
+  /* Set a style for all buttons */
+button {
+    background-color: cornflowerblue;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+  
+  /* Add a hover effect for buttons */
+button:hover {
+    opacity: 0.8;
+}
+
+
+@media (min-width: 1540px) {
+    .container {
+        max-width: 1520px;
+        padding-left: 100px;
+        padding-right: 100px;
+    }
+}

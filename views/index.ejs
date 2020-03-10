@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Season Chart</title>
+        <link rel="stylesheet" href="/stylesheets/main.css">
+        <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+        <script src="https://use.fontawesome.com/releases/v5.12.0/js/all.js" data-auto-replace-svg="nest"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+<body>
+
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div class="container">
+        <form action="/login" method="POST">
+            <label for="uname"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="username" required>
+        
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="password" required>
+        
+            <button type="submit">Login</button>
+            <label>
+            <input type="checkbox" checked="checked" name="remember"> Remember me
+            </label>
+        </form>        
+      </div>
+</div>
+
+<div id="mySidenavSignUp" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div class="container">
+        <form action="/register" method="POST">
+            <label for="uname"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="username" required>
+        
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="password" required>
+        
+            <button type="submit">Sign Up</button>
+            <label>
+            <input type="checkbox" checked="checked" name="remember"> Remember me
+            </label>
+        </form>        
+      </div>
+</div>
+
+<div id="main">
+
+<% var formcount = 0%>   
+<% var animeArray = []%>
+<div class="navbar">
+    <div class="button-layout">
+        <a href="/" class="logo-home"> Home </a>
+        <div class="season-buttons">
+            <a href="/season/<%=curr_year%>/winter" id="Winter" class="season"> 
+                <div class="season-name">Winter</div>
+                <div class="season-year"><%=curr_year%></div>
+            </a>
+            <a href="/season/<%=curr_year%>/spring" id="Spring" class="season"> 
+                <div class="season-name">Spring</div>
+                <div class="season-year"><%=curr_year%></div>
+            </a>
+            <a href="/season/<%=(curr_year - 1)%>/summer" id="Summer" class="season"> 
+                <div class="season-name">Summer</div>
+                <div class="season-year"><%=(curr_year - 1)%></div>
+            </a>
+            <a href="/season/<%=(curr_year - 1)%>/fall" id="Fall" class="season"> 
+                <div class="season-name">Fall</div>
+                <div class="season-year"><%=(curr_year - 1)%></div> 
+            </a>
+        </div>
+        <div class="user-options">
+            <%if(!curr_user){%>
+                <div class="option" style="margin-right: 10px;">
+                    <a href="javascript:void(0)" id="user-name" >
+                        <div class="icon" onclick="openNav()"><i class="far fa-user"></i></div> 
+                        <div class="icon-description" onclick="openNav()">Login</div>
+                    </a>
+                </div>
+                <div class="option">
+                    <a href="javascript:void(0)" id="sign-up" >
+                        <div class="icon" onclick="openNavSignUp()"><i class="fas fa-user-plus"></i></div> 
+                        <div class="icon-description" onclick="openNavSignUp()">Sign Up</div>
+                    </a>
+                </div>
+            <%} else {%>
+                <div class="option" style="margin-right: 10px;">
+                    <a href="#" id="user-name">
+                        <div class="icon"><i class="fas fa-user-check"></i></div>
+                        <div class="icon-description">Signed in as <%=curr_user.username%></div>
+                    </a>
+                </div>
+                <div class="option" style="margin-right: 10px;">
+                    <a href="/schedule/<%=curr_user.username%>/<%=curr_year%>/<%=season%>" id="user-schedule">
+                        <form action="/schedule/<%=curr_user.username%>" method="POST">
+                            <div class="icon"> 
+                                <button class="add2scheduleicon" onclick="replace();"><i class="far fa-calendar-alt"></i></button>
+                            </div>
+                            <div class="icon-description">
+                                <input type="hidden" id="scheduleform" name="dataArray">
+                                <button class="add2scheduleicon" onclick="replace();">Schedule</button>
+                            </form>
+                        </div>
+                    </a>
+                </div>
+                <div class="option">
+                    <a href="/logout" id="logout">
+                        <div class="icon"><i class="fas fa-sign-out-alt"></i></div>
+                        <div class="icon-description">Logout</div>
+                    </a>
+                </div>
+            <%}%>
+        </div>           
+    </div>
+</div>
+
+<div class="main-section">
+    <%if(!curr_user){%>
+    <div class="alert">
+        <h1>Login to schedule anime shows</h1>
+    </div>
+    <%} else {%>
+        <div class="alert">
+            <h1>Press the <i class="far fa-calendar-check"></i> icon to select anime to add to schedule, and click on <i class="far fa-calendar-alt"></i> to save to your schedule</h1>
+        </div>
+    <%}%>
+
+    <div class="chart-display">
+
+        <section class="lodaded">
+            <h2 class="headers-chart">TV</h1>
+
+            <div class="anime-list">
+                <% data["anime"].forEach(function(anime) { %>        
+                    <% if(anime["type"] == "TV" && anime["continuing"] == false) { %>
+                        <% id = anime["id"] %>             
+                        <%formcount = formcount + 1%>        
+                            <div class="anime-card" id="card<%=formcount%>">            
+                                <a href="/anime/<%= anime["mal_id"]%>" class="anime-cover">
+                                    <%var image = anime["image_url"]%>
+                                    <%var insert_index = image.indexOf(".jpg")%>
+                                    <%var insert = "l"%>
+                                    <%var largepic = [image.slice(0,insert_index), insert, image.slice(insert_index)].join('')%>
+                                    <img src="<%=largepic%>" alt="" class = "cover-image">
+                                    <div class = "anime-title">
+                                        <%=anime["title"]%>
+                                        <div class="anime-studio">
+                                            <% if(anime["producers"]["0"]!= null) { %>
+                                            <%=anime["producers"]["0"]["name"]%>
+                                        <%}%>
+                                        </div>                                        
+                                    </div>   
+                                </a>
+                                <div class="anime-details">
+                                    <div class="body" id="info">
+                                        <div class="header-info">
+                                            <div name = time>
+                                                <div class="episode" style="font-size: 12px;">
+                                                    <%if(anime["airing_start"] != null) {%>
+                                                        <%var start_date = new Date(anime["airing_start"])%>
+                                                        <%var ep_count = 1%>
+                                                        <%var start_date_ms = start_date.getTime()%>
+                                                        <%var today_ms = today.getTime()%>
+                                                        <%while(start_date_ms <= today_ms){%>
+                                                            <%start_date_ms = start_date_ms + 604.8e6%>
+                                                            <%if(ep_count != anime["episodes"]) {%>
+                                                                <%ep_count = ep_count + 1%> 
+                                                            <%}%>
+                                                        <%}%>     
+                                                        <%if(ep_count == anime["episodes"]) {%>                                                                                                      
+                                                            <% var output_episode = ep_count + " episodes aired on" %>
+                                                            <% var completed = true %>
+                                                        <%} else {%>
+                                                            <%var output_episode = "Episode " + ep_count + " airing in"%> 
+                                                        <%}%>    
+                                                    <%} else {%>   
+                                                        <%var output_episode = "Airing in"%>
+                                                        <%var nodate = true%>
+                                                    <%}%>                                           
+                                                    <%= output_episode%>
+                                                </div>
+                                                <div class="countdown" style="font-size: 20px; padding-top: 4px;">
+                                                    <%if(nodate != true){%>
+                                                        <%if(completed == true) {%>
+                                                            <%var month = start_date.toLocaleString('default', { month: 'long' })%>
+                                                            <%var day = start_date.getDate()%>
+                                                            <%var year = start_date.getFullYear()%>
+                                                            <%var output_count = month + " " + day + ", " + year%>
+                                                        <%} else {%> 
+                                                            <%var countdown = start_date_ms - today_ms%>
+                                                            <%var days = Math.trunc(countdown / 86.4e6)%>
+                                                            <%var hours = Math.trunc(((countdown / 86.4e6) - days)  * 24) %>
+                                                            <%if(hours > 1) {%>
+                                                                <%if(days > 1) {%>
+                                                                    <%var output_count = days + " days, " + hours + " hours"%>                                                            
+                                                                <%} else if(days == 1) {%>
+                                                                    <%var output_count = days + " day, " + hours + " hours"%> 
+                                                                <%} else {%>
+                                                                    <%var output_count = hours + " hours"%> 
+                                                                <%}%>
+                                                            <%} else if (hours == 1) {%>
+                                                                <%if(days > 1) {%>
+                                                                    <%var output_count = days + " days, " + hours + " hour"%>                                                            
+                                                                <%} else if(days == 1) {%>
+                                                                    <%var output_count = days + " day, " + hours + " hour"%> 
+                                                                <%} else {%>
+                                                                    <%var output_count = hours + " hour"%> 
+                                                                <%}%>
+                                                            <%} else {%>
+                                                                <%if(days > 1) {%>
+                                                                    <%var output_count = days + " days"%>                                                            
+                                                                <%} else if(days == 1) {%>
+                                                                    <%var output_count = days + " day"%> 
+                                                                <%} else {%>
+                                                                    <%var output_count = "Currently Airing"%> 
+                                                                <%}%>
+                                                            <%}%>
+                                                        <%}%>
+                                                    <%} else {%>
+                                                        <% var output_count = curr_year %>
+                                                    <%}%>
+                                                    <%=output_count%>
+                                                </div>
+                                            </div>
+                                            <div name = source style="font-size: 12px; padding-top: 5px;">
+                                                <%var output_source = "Source: " + anime["source"] %>
+                                                <%=output_source %>
+                                            </div>    
+                                        </div>
+                                        <div class="scroller-content">
+                                            <div class="scroller-wrap">
+                                                <div class="synopsis">
+                                                    <span><%= anime["synopsis"] %></span>
+                                                </div>
+                                            </div>                                            
+                                        </div>                                        
+                                    </div>
+                                    
+                                    <div class="footer"> 
+                                        <div class="genres">
+                                            <% anime["genres"].forEach(function(genres) { %>
+                                                <div class="genre"><%= genres["name"] %></div>                                            
+                                            <%})%>
+                                        </div>                                        
+                                        <%if(curr_user && start_date != null){%>
+                                            <div class="watchlist" style="margin-left: auto;">
+                                                <i class="far fa-calendar-check"></i>
+                                                <div class="dropup-content">
+                                                    <%var weekday = start_date.getDay()%>
+                                                    <%animeArray[formcount] = {aniId: anime["mal_id"], anititle: anime["title"], aniImage: largepic, aniDay: weekday, currSeason: aniseason, currYear: a_year}%>                                                    
+                                                    <button class="add2schedule" onclick="add2Array('<%= formcount%>');">Add to Schedule</button>     
+                                                    <button class="add2schedule" onclick="viewArray();">View Schedule</button>                                                                                            
+                                                </div>
+                                            </div>          
+                                        <%}%>                                 
+                                    </div>
+                                </div>                               
+                            </div>
+                    <% } %>
+                <% }) %>
+            </div>
+        </section>
+    <%var empty_leftover = true%>
+    <%data["anime"].forEach(function(anime) {%>
+        <%if(anime["continuing"] == true) {%>
+            <%empty_leftover = false%>
+        <%}%>
+    <%})%>
+
+    <%if(empty_leftover == false) {%>
+        <section class="lodaded">
+            <h2 class="headers-chart">Leftovers</h2>
+        
+            <div class="anime-list">
+                <% data["anime"].forEach(function(anime) { %>
+                    <%var start_date = new Date(anime["airing_start"])%>
+                    <%var start_year = start_date.getFullYear()%> 
+                    <% if(anime["type"] == "TV" && anime["continuing"] == true && start_year >= (today.getFullYear() - 5) && anime["members"] > 8000) { %>  
+                        <% id = anime["id"] %>            
+                        <%formcount = formcount + 1%>        
+                            <div class="anime-card" id="card<%=formcount%>">            
+                            <a href="/anime/<%= anime["mal_id"]%>" class="anime-cover">
+                                <%var image = anime["image_url"]%>
+                                <%var insert_index = image.indexOf(".jpg")%>
+                                <%var insert = "l"%>
+                                <%var largepic = [image.slice(0,insert_index), insert, image.slice(insert_index)].join('')%>
+                                <img src="<%=largepic%>" alt="" class = "cover-image">
+                                <div class = "anime-title">
+                                    <%=anime["title"]%>
+                                    <div class="anime-studio">
+                                        <% if(anime["producers"]["0"]!= null) { %>
+                                        <%=anime["producers"]["0"]["name"]%>
+                                    <%}%>
+                                    </div>                                        
+                                </div>   
+                            </a>
+                            <div class="anime-details">
+                                <div class="body" id="info">
+                                    <div class="header-info">
+                                        <div name = time>
+                                            <div class="episode" style="font-size: 12px;">
+                                                <%if(anime["airing_start"] != null) {%>
+                                                    <%var start_date = new Date(anime["airing_start"])%>
+                                                    <%var ep_count = 1%>
+                                                    <%var start_date_ms = start_date.getTime()%>
+                                                    <%var today_ms = today.getTime()%>
+                                                    <%while(start_date_ms <= today_ms){%>
+                                                        <%start_date_ms = start_date_ms + 604.8e6%>
+                                                        <%if(ep_count != anime["episodes"]) {%>
+                                                            <%ep_count = ep_count + 1%> 
+                                                        <%}%>
+                                                    <%}%>     
+                                                    <%if(ep_count == anime["episodes"]) {%>                                                                                                      
+                                                        <% var output_episode = ep_count + " episodes aired on" %>
+                                                        <% var completed = true %>
+                                                    <%} else {%>
+                                                        <%var output_episode = "Episode " + ep_count + " airing in"%> 
+                                                    <%}%>    
+                                                <%} else {%>   
+                                                    <%var output_episode = "Airing in"%>
+                                                    <%var nodate = true%>
+                                                <%}%>                                           
+                                                <%= output_episode%>
+                                            </div>
+                                            <div class="countdown" style="font-size: 20px; padding-top: 4px;">
+                                                <%if(nodate != true){%>
+                                                    <%if(completed == true) {%>
+                                                        <%var month = start_date.toLocaleString('default', { month: 'long' })%>
+                                                        <%var day = start_date.getDate()%>
+                                                        <%var year = start_date.getFullYear()%>
+                                                        <%var output_count = month + " " + day + ", " + year%>
+                                                    <%} else {%> 
+                                                        <%var countdown = start_date_ms - today_ms%>
+                                                        <%var days = Math.trunc(countdown / 86.4e6)%>
+                                                        <%var hours = Math.trunc(((countdown / 86.4e6) - days)  * 24) %>
+                                                        <%if(hours > 1) {%>
+                                                            <%if(days > 1) {%>
+                                                                <%var output_count = days + " days, " + hours + " hours"%>                                                            
+                                                            <%} else if(days == 1) {%>
+                                                                <%var output_count = days + " day, " + hours + " hours"%> 
+                                                            <%} else {%>
+                                                                <%var output_count = hours + " hours"%> 
+                                                            <%}%>
+                                                        <%} else if (hours == 1) {%>
+                                                            <%if(days > 1) {%>
+                                                                <%var output_count = days + " days, " + hours + " hour"%>                                                            
+                                                            <%} else if(days == 1) {%>
+                                                                <%var output_count = days + " day, " + hours + " hour"%> 
+                                                            <%} else {%>
+                                                                <%var output_count = hours + " hour"%> 
+                                                            <%}%>
+                                                        <%} else {%>
+                                                            <%if(days > 1) {%>
+                                                                <%var output_count = days + " days"%>                                                            
+                                                            <%} else if(days == 1) {%>
+                                                                <%var output_count = days + " day"%> 
+                                                            <%} else {%>
+                                                                <%var output_count = "Currently Airing"%> 
+                                                            <%}%>
+                                                        <%}%>
+                                                    <%}%>
+                                                <%} else {%>
+                                                    <% var output_count = curr_year %>
+                                                <%}%>
+                                                <%=output_count%>
+                                            </div>
+                                        </div>
+                                        <div name = source style="font-size: 12px; padding-top: 5px;">
+                                            <% var output_source = "Source: " + anime["source"] %>
+                                            <%= output_source %>
+                                        </div>    
+                                    </div>
+                                    <div class="scroller-content">
+                                        <div class="scroller-wrap">
+                                            <div class="synopsis">
+                                                <span><%= anime["synopsis"] %></span>
+                                            </div>
+                                        </div>                                            
+                                    </div>                                        
+                                </div>
+                                
+                                <div class="footer"> 
+                                    <div class="genres">
+                                        <% anime["genres"].forEach(function(genres) { %>
+                                            <div class="genre"><%= genres["name"] %></div>                                            
+                                        <%})%>
+                                    </div>
+                                    <%if(curr_user && start_date != null){%>
+                                        <div class="watchlist" style="margin-left: auto;">
+                                            <i class="far fa-calendar-check"></i>
+                                            <div class="dropup-content">
+                                                <%var weekday = start_date.getDay()%>
+                                                <%animeArray[formcount] = {aniId: anime["mal_id"], anititle: anime["title"], aniImage: largepic, aniDay: weekday, currSeason: aniseason, currYear: a_year}%>                                                    
+                                                <button class="add2schedule" onclick="add2Array('<%= formcount%>');">Add to Schedule</button>     
+                                                <button class="add2schedule" onclick="viewArray();">View Schedule</button>                                                                                            
+                                            </div>
+                                        </div>          
+                                    <%}%>                                           
+                                </div>
+                            </div>                               
+                        </div>      
+                    <% } %>
+                <% }) %>
+            </div>
+        </section>
+    <%}%>
+        <section class="lodaded">
+            <h2 class="headers-chart">ONA/OVA/Special</h2>
+
+            <div class="anime-list">
+                <% data["anime"].forEach(function(anime) { %>
+                    <% if(anime["type"] != "TV" && anime["type"] != "Movie" && anime["r18"] != true) { %>
+                        <% id = anime["id"] %>            
+                        <%formcount = formcount + 1%>        
+                            <div class="anime-card" id="card<%=formcount%>">           
+                            <a href="/anime/<%= anime["mal_id"]%>" class="anime-cover">
+                                <%var image = anime["image_url"]%>
+                                <%var insert_index = image.indexOf(".jpg")%>
+                                <%var insert = "l"%>
+                                <%var largepic = [image.slice(0,insert_index), insert, image.slice(insert_index)].join('')%>
+                                <img src="<%=largepic%>" alt="" class = "cover-image">
+                                <div class = "anime-title">
+                                    <%=anime["title"]%>
+                                    <div class="anime-studio">
+                                        <% if(anime["producers"]["0"]!= null) { %>
+                                        <%=anime["producers"]["0"]["name"]%>
+                                    <%}%>
+                                    </div>                                        
+                                </div>   
+                            </a>
+                            <div class="anime-details">
+                                <div class="body" id="info">
+                                    <div class="header-info">
+                                        <div name = time>
+                                            <div class="episode" style="font-size: 12px;">
+                                                <%if(anime["airing_start"] != null) {%>
+                                                    <%var start_date = new Date(anime["airing_start"])%>
+                                                    <%var ep_count = 1%>
+                                                    <%var start_date_ms = start_date.getTime()%>
+                                                    <%var today_ms = today.getTime()%>
+                                                    <%while(start_date_ms < today_ms){%>
+                                                        <%start_date_ms = start_date_ms + 691.2e6%>
+                                                        <% if(ep_count != anime["episodes"]) {%>
+                                                            <%ep_count = ep_count + 1%> 
+                                                        <%}%>
+                                                    <%}%>     
+                                                    <%if(ep_count == anime["episodes"] && start_date <= today) {%>                                                                                                      
+                                                        <% if(ep_count == 1) {%>
+                                                            <% var output_episode = ep_count + " episode aired on" %>
+                                                        <%} else {%>                                                                                                 
+                                                            <% var output_episode = ep_count + " episodes aired on" %>
+                                                        <%}%>
+                                                        <% var completed = true %>
+                                                    <%} else {%>
+                                                        <%var output_episode = "Episode " + ep_count + " airing in"%> 
+                                                    <%}%>    
+                                                <%} else {%> 
+                                                    <%var output_episode = "Airing in"%>
+                                                    <%var nodate = true%>
+                                                <%}%>                                                                                                    
+                                                <%= output_episode%>
+                                            </div>
+                                            <div class="countdown" style="font-size: 20px; padding-top: 4px;">
+                                                <%if(nodate != true){%>
+                                                    <%if(completed == true) {%>
+                                                        <%var month = start_date.toLocaleString('default', { month: 'long' })%>
+                                                        <%var day = start_date.getDate()%>
+                                                        <%var year = start_date.getFullYear()%>
+                                                        <%var output_count = month + " " + day + ", " + year%>
+                                                    <%} else {%>
+                                                        <%var countdown = start_date_ms - today_ms%>
+                                                        <%var days = Math.trunc(countdown / 86.4e6)%>
+                                                        <%var hours = Math.trunc(((countdown / 86.4e6) - days)  * 24) %>
+                                                        <%if(hours > 1) {%>
+                                                            <%if(days > 1) {%>
+                                                                <%var output_count = days + " days, " + hours + " hours"%>                                                            
+                                                            <%} else if(days == 1) {%>
+                                                                <%var output_count = days + " day, " + hours + " hours"%> 
+                                                            <%} else {%>
+                                                                <%var output_count = hours + " hours"%> 
+                                                            <%}%>
+                                                        <%} else if (hours == 1) {%>
+                                                            <%if(days > 1) {%>
+                                                                <%var output_count = days + " days, " + hours + " hour"%>                                                            
+                                                            <%} else if(days == 1) {%>
+                                                                <%var output_count = days + " day, " + hours + " hour"%> 
+                                                            <%} else {%>
+                                                                <%var output_count = hours + " hour"%> 
+                                                            <%}%>
+                                                        <%} else {%>
+                                                            <%if(days > 1) {%>
+                                                                <%var output_count = days + " days"%>                                                            
+                                                            <%} else if(days == 1) {%>
+                                                                <%var output_count = days + " day"%> 
+                                                            <%} else {%>
+                                                                <%var output_count = "Currently Airing"%> 
+                                                            <%}%>
+                                                        <%}%>
+                                                    <%}%>
+                                                <%} else {%>
+                                                    <% var output_count = curr_year %>
+                                                <%}%>                                                
+                                                <%=output_count%>
+                                            </div>
+                                        </div>
+                                        <div name = source style="font-size: 12px; padding-top: 5px;">
+                                            <% var output_source = "Source: " + anime["source"] %>
+                                            <%= output_source %>
+                                        </div>    
+                                    </div>
+                                    <div class="scroller-content">
+                                        <div class="scroller-wrap">
+                                            <div class="synopsis">
+                                                <span><%= anime["synopsis"] %></span>
+                                            </div>
+                                        </div>                                            
+                                    </div>                                        
+                                </div>
+                                
+                                <div class="footer"> 
+                                    <div class="genres">
+                                        <% anime["genres"].forEach(function(genres) { %>
+                                            <div class="genre"><%= genres["name"] %></div>                                            
+                                        <%})%>
+                                    </div>
+                                    <%if(curr_user && start_date != null){%>
+                                        <div class="watchlist" style="margin-left: auto;">
+                                            <i class="far fa-calendar-check"></i>
+                                            <div class="dropup-content">
+                                                <%var weekday = start_date.getDay()%>
+                                                <%animeArray[formcount] = {aniId: anime["mal_id"], anititle: anime["title"], aniImage: largepic, aniDay: weekday, currSeason: aniseason, currYear: a_year}%>                                                    
+                                                <button class="add2schedule" onclick="add2Array('<%= formcount%>');">Add to Schedule</button>     
+                                                <button class="add2schedule" onclick="viewArray();">View Schedule</button>                                                                                            
+                                            </div>
+                                        </div>          
+                                    <%}%>                                          
+                                </div>
+                            </div>                               
+                        </div>    
+                    <% } %>
+                <% }) %>
+            </div>
+        </section>
+        
+        <section class="lodaded">
+            <h2 class="headers-chart">Movie</h2>
+        
+            <div class="anime-list">
+                <% data["anime"].forEach(function(anime) { %>
+                    <% if(anime["type"] == "Movie") { %>
+                        <% id = anime["id"] %>            
+                        <%formcount = formcount + 1%>        
+                            <div class="anime-card" id="card<%=formcount%>">            
+                            <a href="/anime/<%= anime["mal_id"]%>" class="anime-cover">
+                                <%var image = anime["image_url"]%>
+                                <%var insert_index = image.indexOf(".jpg")%>
+                                <%var insert = "l"%>
+                                <%var largepic = [image.slice(0,insert_index), insert, image.slice(insert_index)].join('')%>
+                                <img src="<%=largepic%>" alt="" class = "cover-image">
+                                <div class = "anime-title">
+                                    <%=anime["title"]%>
+                                    <div class="anime-studio">
+                                        <% if(anime["producers"]["0"]!= null) { %>
+                                        <%=anime["producers"]["0"]["name"]%>
+                                    <%}%>
+                                    </div>                                        
+                                </div>   
+                            </a>
+                            <div class="anime-details">
+                                <div class="body" id="info">
+                                    <div class="header-info">
+                                        <div name = time>
+                                            <div class="episode" style="font-size: 12px;">
+                                                <%if(anime["airing_start"] != null) {%>
+                                                    <%var start_date = new Date(anime["airing_start"])%>
+                                                    <%var ep_count = 1%>
+                                                    <%var start_date_ms = start_date.getTime()%>
+                                                    <%var today_ms = today.getTime()%>
+                                                    <%if(start_date <= today) {%>    
+                                                        <% var output_episode = ep_count + " episode aired on" %>                                                       
+                                                        <% var completed = true %>
+                                                    <%} else {%>
+                                                        <%var output_episode = "Episode " + ep_count + " airing in"%> 
+                                                    <%}%>    
+                                                <%} else {%> 
+                                                    <%var output_episode = "Airing in"%>
+                                                    <%var nodate = true%>
+                                                <%}%>                                                                                                    
+                                                <%= output_episode%>
+                                            </div>
+                                            <div class="countdown" style="font-size: 20px; padding-top: 4px;">
+                                                <%if(nodate != true){%>
+                                                    <%if(completed == true) {%>
+                                                        <%var month = start_date.toLocaleString('default', { month: 'long' })%>
+                                                        <%var day = start_date.getDate()%>
+                                                        <%var year = start_date.getFullYear()%>
+                                                        <%var output_count = month + " " + day + ", " + year%>
+                                                    <%} else {%>
+                                                        <%var countdown = start_date_ms - today_ms%>
+                                                        <%var days = Math.trunc(countdown / 86.4e6)%>
+                                                        <%var hours = Math.trunc(((countdown / 86.4e6) - days)  * 24) %>
+                                                        <%if(hours > 1) {%>
+                                                            <%if(days > 1) {%>
+                                                                <%var output_count = days + " days, " + hours + " hours"%>                                                            
+                                                            <%} else if(days == 1) {%>
+                                                                <%var output_count = days + " day, " + hours + " hours"%> 
+                                                            <%} else {%>
+                                                                <%var output_count = hours + " hours"%> 
+                                                            <%}%>
+                                                        <%} else if (hours == 1) {%>
+                                                            <%if(days > 1) {%>
+                                                                <%var output_count = days + " days, " + hours + " hour"%>                                                            
+                                                            <%} else if(days == 1) {%>
+                                                                <%var output_count = days + " day, " + hours + " hour"%> 
+                                                            <%} else {%>
+                                                                <%var output_count = hours + " hour"%> 
+                                                            <%}%>
+                                                        <%} else {%>
+                                                            <%if(days > 1) {%>
+                                                                <%var output_count = days + " days"%>                                                            
+                                                            <%} else if(days == 1) {%>
+                                                                <%var output_count = days + " day"%> 
+                                                            <%} else {%>
+                                                                <%var output_count = "Currently Airing"%> 
+                                                            <%}%>
+                                                        <%}%>                                                            
+                                                    <%}%>
+                                                <%} else {%>
+                                                    <% var output_count = curr_year %>
+                                                <%}%>                                                
+                                                <%=output_count%>
+                                            </div>
+                                        </div>
+                                        <div name = source style="font-size: 12px; padding-top: 5px;">
+                                            <% var output_source = "Source: " + anime["source"] %>
+                                            <%= output_source %>
+                                        </div>    
+                                    </div>
+                                    <div class="scroller-content">
+                                        <div class="scroller-wrap">
+                                            <div class="synopsis">
+                                                <span><%= anime["synopsis"] %></span>
+                                            </div>
+                                        </div>                                            
+                                    </div>                                        
+                                </div>
+                                
+                                <div class="footer"> 
+                                    <div class="genres">
+                                        <% anime["genres"].forEach(function(genres) { %>
+                                            <div class="genre"><%= genres["name"] %></div>                                            
+                                        <%})%>
+                                    </div>
+                                    <%if(curr_user && start_date != null){%>
+                                        <div class="watchlist" style="margin-left: auto;">
+                                            <i class="far fa-calendar-check"></i>
+                                            <div class="dropup-content"> 
+                                                <%var weekday = start_date.getDay()%>
+                                                <%animeArray[formcount] = {aniId: anime["mal_id"], anititle: anime["title"], aniImage: largepic, aniDay: weekday, currSeason: aniseason, currYear: a_year}%>                                                    
+                                                <button class="add2schedule" onclick="add2Array('<%= formcount%>');">Add to Schedule</button>     
+                                                <button class="add2schedule" onclick="viewArray();">View Schedule</button>                                                                                            
+                                            </div>
+                                        </div>          
+                                    <%}%>                                         
+                                </div>
+                            </div>                               
+                        </div>        
+                    <% } %>
+                <% }) %>
+            </div>
+        </section>   
+
+    </div>    
+</div>    
+</div>
+<script>
+
+var amount = '';
+
+function scroll() {
+    $('.scroller-wrap').animate({
+        scrollTop: amount
+    });
+}
+
+$('.scroller-wrap').mouseleave(function(){
+    amount = '0';
+    scroll();
+});
+
+function openNav() {
+    if(window.innerWidth >= 1180 || window.innerWidth <= 1100) {
+        document.getElementById("mySidenav").style.width = "250px";
+        document.getElementById("main").style.marginRight = "250px";
+    }
+    else {
+        document.getElementById("mySidenav").style.width = "180px";
+        document.getElementById("main").style.marginRight = "180px";
+    }
+  
+}
+
+function openNavSignUp() {
+    if(window.innerWidth >= 1180 || window.innerWidth <= 1100) {
+        document.getElementById("mySidenavSignUp").style.width = "250px";
+        document.getElementById("main").style.marginRight = "250px";
+    }
+    else {
+        document.getElementById("mySidenavSignUp").style.width = "180px";
+        document.getElementById("main").style.marginRight = "180px";
+    }
+  
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+  document.getElementById("mySidenavSignUp").style.width = "0";
+  document.getElementById("main").style.marginRight= "0";
+}
+
+const aniArray = [];
+const getAnimeArray = <%- JSON.stringify(animeArray) %>;
+
+function add2Array(data) {
+    var repeated = false;
+    var id = "card" + data;
+    aniArray.forEach(function(anime){
+        if(anime == getAnimeArray[data]) {
+            repeated = true;
+        }
+    })
+    if(repeated == false) {
+        document.getElementById(id).style.borderColor = "cornflowerblue";
+        document.getElementById(id).style.borderStyle = "inset";
+        aniArray.push(getAnimeArray[data]);
+    }    
+}
+
+function viewArray() {
+   
+    aniArray.forEach(function(anime){
+        console.log(anime);
+    })
+    
+}
+function replace() {
+    var data = JSON.stringify(aniArray);
+    $('#scheduleform').val(data);
+    console.log(data);
+    setTimeout(25000);
+}
+
+
+</script>
+
+
+</body>
+</html>

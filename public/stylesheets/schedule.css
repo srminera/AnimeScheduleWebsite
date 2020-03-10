@@ -1,0 +1,375 @@
+*, :after, :before {
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    min-height: 100%;
+    background-color: rgb(19, 23, 29);
+    color: #ffff;
+}
+
+div {
+    display: block;
+}
+
+
+a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+section {
+    margin-bottom: 60px;
+    width: fit-content;
+}
+
+h2 {
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    font-size: 2.4rem;
+    font-weight: 700;
+}
+
+.navbar {
+    height: 130px;
+    width: 100%;
+    padding-top: 40px;
+    position: relative;
+    background-color: #3F3F51;
+}
+
+.alert {
+    display: block;
+    text-align: center;
+    margin: 145px 20% 30px;
+    background: lightslategrey;
+}
+
+.button-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-items: center;
+    margin: 0 12vw;
+    position: relative;
+}
+
+.season-buttons {
+    display: flex;
+}
+
+.user-options {
+    display: flex;
+}
+.season {
+    text-align: center;
+    width: 9rem;
+}
+
+.season-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.season-year {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: cornflowerblue;
+}
+
+.option .icon {
+    text-align: center;
+}
+
+.main-section {
+    background-color: rgb(19, 23, 29);
+    margin-top: -110px;
+    position: relative;
+    z-index: 60;
+    margin-bottom: 300px;
+}
+
+.headers-chart {
+    color: #ffffff;
+    display: grid;
+    grid-column-gap: 50px;
+    grid-template-columns: repeat(4, minmax(390px, 460px));
+    justify-content: center;
+    letter-spacing: .1rem;
+    margin-top: 10px;
+    font-size: 1.8rem;
+}
+
+.anime-card {
+    background: rgb(31,35,45);
+    border-radius: 20px;
+    display: inline-grid;
+    height: 550px;
+    min-width: 350px;
+    overflow: hidden;
+    text-align: left;
+}
+
+.anime-cover {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+}
+
+.cover-image {
+    object-fit: cover;
+    object-position: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.anime-title {
+    background: rgba(41,41,41,.9);
+    color: rgb(237,241,245);
+    font-size: 1rem;
+    padding: 35px;
+    position: relative;
+    width: 100%;
+    font-weight: 600;
+}
+
+  /* Set a style for all buttons */
+button {
+    background-color: cornflowerblue;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+  
+  /* Add a hover effect for buttons */
+button:hover {
+    opacity: 0.8;
+}
+
+
+@media only screen and (max-width: 3000px) {     
+    .headers-chart {
+        color: #ffffff;
+        display: grid;
+        grid-column-gap: 50px;
+        grid-template-columns: repeat(4, minmax(390px, 460px));
+        justify-content: center;
+        letter-spacing: .1rem;
+    }
+
+    .chart-display {
+        margin: 0 5vw;
+        position: relative;
+    }
+      
+    .anime-list {
+        display: grid;
+        grid-column-gap: 142px;
+        grid-row-gap: 40px;
+        grid-template-columns: repeat(4, minmax(350px, 400px));
+        justify-content: center;
+        min-width: 0;
+        width: 100%;
+    }   
+}
+
+@media only screen and (max-width: 2000px) {   
+    .headers-chart {
+        color: #ffffff;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(390px, 460px));
+        justify-content: center;
+        letter-spacing: .1rem;
+    }
+    
+    .chart-display {
+        margin: 0 12vw;
+        position: relative;
+    }
+
+    .anime-list {
+        display: grid;
+        grid-column-gap: 142px;
+        grid-row-gap: 40px;
+        grid-template-columns: repeat(3, minmax(350px, 400px));
+        justify-content: center;
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 1750px) { 
+    .chart-display {
+        margin: 0 8vw;
+        position: relative;
+        padding-bottom: 80px;
+    }  
+}
+
+
+@media only screen and (max-width: 1600px) {   
+    .headers-chart {
+        color: #ffffff;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+        letter-spacing: .1rem;
+    }
+
+    .chart-display {
+        margin: 0 12vw;
+        position: relative;
+    }
+
+    .anime-list {
+        display: grid;
+        grid-column-gap: 50px;
+        grid-row-gap: 40px;
+        grid-template-columns: repeat(3, 1fr);
+        justify-content: center;
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 1350px) {   
+    .button-layout {
+        margin: 0 5vw;
+    }
+
+    .season-buttons {
+        margin-left: 25px;
+    }
+
+    .icon-description {
+        display: none;
+    }
+
+    .headers-chart {
+        color: #ffffff;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+        letter-spacing: .1rem;
+    }
+
+    .chart-display {
+        margin: 0 10vw;
+        position: relative;
+    }
+
+    .anime-list {
+        display: grid;
+        grid-column-gap: 140px;
+        grid-row-gap: 40px;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 1140px) {  
+    .icon-description {
+        display: none;
+    }
+
+    .headers-chart {
+        color: #ffffff;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+        letter-spacing: .1rem;
+    }
+
+    .chart-display {
+        margin: 0 5vw;
+        position: relative;
+    }
+
+    .anime-list {
+        display: grid;
+        grid-column-gap: 140px;
+        grid-row-gap: 40px;
+        grid-template-columns:repeat(2, 1fr);
+        justify-content: center;
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 1100px) {
+    .icon-description {
+        display: none;
+    }
+    
+    .headers-chart {
+        color: #ffffff;
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-content: center;
+        letter-spacing: .1rem;
+    }
+
+    .chart-display {
+        margin: 0 10vw;
+        position: relative;
+    }
+
+    .anime-list {
+        display: grid;
+        grid-column-gap: 50px;
+        grid-row-gap: 40px;
+        grid-template-columns:repeat(2, 1fr);
+        justify-content: center;
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 950px) { 
+    .chart-display {
+        margin: 0 10vw;
+        position: relative;
+        padding-bottom: 80px;
+    }  
+}
+
+@media only screen and (max-width: 900px) { 
+    .chart-display {
+        margin: 0 5vw;
+        position: relative;
+        padding-bottom: 80px;
+    }  
+}
+
+
+@media only screen and (max-width: 800px) {    
+    .icon-description {
+        display: none;
+    }
+
+    .chart-display {
+        margin: 0 3vw;
+        position: relative;
+        padding-bottom: 80px;
+    }
+
+    .anime-list {
+        display: grid;
+        grid-column-gap: 20px;
+        grid-row-gap: 40px;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+        min-width: 0;
+        width: 100%;
+    }
+}

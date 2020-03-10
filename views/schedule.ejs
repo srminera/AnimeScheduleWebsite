@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Anime Schedule</title>
+        <link rel="stylesheet" href="/stylesheets/schedule.css">
+        <link href="https://fonts.googleapis.com/css?family=Nunito&display=swap" rel="stylesheet">
+        <script src="https://use.fontawesome.com/releases/v5.12.0/js/all.js" data-auto-replace-svg="nest"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+</head>
+<body>
+
+
+<%var monday = []%>
+<%var tuesday = []%>
+<%var wednesday = []%>
+<%var thursday = []%>
+<%var friday = []%>
+<%var saturday = []%>
+<%var sunday = []%>
+<%var schedule = []%>
+<%var selection = {year: "", season: ""}%>
+<%var curr_season = false%>
+<%var push = false %>
+
+<div class="navbar">
+    <div class="button-layout">
+        <a href="/" class="logo-home"> Home </a>
+        <div class="season-buttons">
+            <a href="/season/<%=curr_year%>/winter" id="Winter" class="season"> 
+                <div class="season-name">Winter</div>
+                <div class="season-year"><%=curr_year%></div>
+            </a>
+            <a href="/season/<%=curr_year%>/spring" id="Spring" class="season"> 
+                <div class="season-name">Spring</div>
+                <div class="season-year"><%=curr_year%></div>
+            </a>
+            <a href="/season/<%=(curr_year - 1)%>/summer" id="Summer" class="season"> 
+                <div class="season-name">Summer</div>
+                <div class="season-year"><%=(curr_year - 1)%></div>
+            </a>
+            <a href="/season/<%=(curr_year - 1)%>/fall" id="Fall" class="season"> 
+                <div class="season-name">Fall</div>
+                <div class="season-year"><%=(curr_year - 1)%></div> 
+            </a>
+        </div>
+        <div class="user-options">
+            <div class="option" style="margin-right: 10px;">
+                <a href="#" id="user-name">
+                    <div class="icon"><i class="fas fa-user-check"></i></div>
+                    <div class="icon-description">Signed in as <%=curr_user.username%></div>
+                </a>
+            </div>            
+            <div class="option">
+                <a href="/logout" id="logout">
+                    <div class="icon"><i class="fas fa-sign-out-alt"></i></div>
+                    <div class="icon-description">Logout</div>
+                </a>
+            </div>
+        </div>           
+    </div>
+</div>
+
+<div class="main-section">
+    <%if(userSchedule.animes.length == 0) {%> 
+        <div class="alert">
+            <h1>You currently have no anime shows scheduled</h1>
+        </div>
+    <%} else {%>
+        <%userSchedule.animes.forEach(function(anime) {%> 
+            <%if(anime.year == scheduleYear && anime.season == scheduleSeason) {%>
+                <%curr_season = true%>
+                <%switch(anime.day) { 
+                    case '0': sunday.push(anime)
+                            break;
+                    case '1': monday.push(anime)
+                            break;
+                    case '2': tuesday.push(anime)
+                            break;
+                    case '3': wednesday.push(anime)
+                            break;
+                    case '4': thursday.push(anime)
+                            break;
+                    case '5': friday.push(anime)
+                            break;
+                    case '6': saturday.push(anime)
+                            break;
+                }%>
+            <%}%>
+        <%})%>
+
+        <%if(curr_season == false) {%>
+            <div class="alert">
+                <%var seasonNameCapitalized = scheduleSeason.charAt(0).toUpperCase() + scheduleSeason.slice(1)%>
+                <h1>You have no anime scheduled for <%=seasonNameCapitalized%> <%=scheduleYear%></h1>
+                <p>Chose from your existing schedules to display one:</p>
+        
+                <%userSchedule.animes.forEach(function(anime) {%>
+                    <%selection.year = anime.year%>
+                    <%selection.season = anime.season%>
+                    <%if(schedule.length > 0) {%>
+                        <%schedule.forEach(function(anischedule){%>
+                            <%if(anischedule.year == selection.year) {%>
+                                <%if(anischedule.season == selection.season){%>
+                                    <%push = false%>
+                                <%} else {%>
+                                    <%push = true%>
+                                <%}%>    
+                            <%} else {%>
+                                <%push = true%>
+                            <%}%>
+                        <%})%>
+                    <%} else {%>
+                        <%schedule.push(selection)%>
+                    <%}%>
+                    
+                    <%if(push == true){%>
+                        <%schedule.push(selection)%>
+                    <%}%>
+                <%})%>
+                <li>
+                    <%console.log(schedule)%>
+                    <%schedule.forEach(function(anischedule){%>
+                        <a href="/schedule/<%=curr_user.username%>/<%=anischedule.year%>/<%=anischedule.season%>">
+                            <%var seasonName = anischedule.season%>
+                            <%var seasonNameCapitalized = seasonName.charAt(0).toUpperCase() + seasonName.slice(1)%>
+                            <%=seasonNameCapitalized%> <%=anischedule.year%> 
+                        </a>
+                    <%})%>     
+                </li>      
+            </div>
+        <%} else {%> 
+            <%var seasonNameCapitalized = scheduleSeason.charAt(0).toUpperCase() + scheduleSeason.slice(1)%>
+            <div class="alert">
+                <h1>This is the schedule for <%=seasonNameCapitalized%> <%=scheduleYear%></h1>
+            </div>
+            
+            <div class="chart-display">
+                <%if(monday.length > 0) {%>
+                    <section class="lodaded">
+                        <h2 class="headers-chart">Monday</h1>
+                        <div class="anime-list">   
+                            <%monday.forEach(function(mon){%>        
+                                <div class="anime-card">            
+                                    <a href="" class="anime-cover">
+                                        <img src="<%=mon.image_url%>" alt="" class = "cover-image">
+                                        <div class = "anime-title"> 
+                                            <%=mon.title%>                      
+                                        </div>   
+                                    </a>                             
+                                </div>
+                            <%})%>
+                        </div>
+                    </section>
+                <%}%>
+                <%if(tuesday.length > 0) {%>
+                    <section class="lodaded">
+                        <h2 class="headers-chart">Tuesday</h1>
+                        <div class="anime-list">
+                            <%tuesday.forEach(function(tue){%>           
+                                <div class="anime-card">            
+                                    <a href="" class="anime-cover">
+                                        <img src="<%=tue.image_url%>" alt="" class = "cover-image">
+                                        <div class = "anime-title">
+                                            <%=tue.title%>                       
+                                        </div>   
+                                    </a>                             
+                                </div>
+                            <%})%>
+                        </div>                            
+                    </section>
+                <%}%>
+                <%if(wednesday.length > 0) {%>
+                    <section class="lodaded">
+                        <h2 class="headers-chart">Wednesday</h1>                            
+                        <div class="anime-list">    
+                            <%wednesday.forEach(function(wed){%>       
+                                <div class="anime-card">            
+                                    <a href="" class="anime-cover">
+                                        <img src="<%=wed.image_url%>" alt="" class = "cover-image">
+                                        <div class = "anime-title">
+                                            <%=wed.title%>                       
+                                        </div>   
+                                    </a>                             
+                                </div>
+                            <%})%>
+                        </div>                            
+                    </section>
+                <%}%>
+                <%if(thursday.length > 0) {%>
+                    <section class="lodaded">
+                        <h2 class="headers-chart">Thursday</h1>                            
+                        <div class="anime-list">
+                            <%thursday.forEach(function(thu){%>           
+                                <div class="anime-card">            
+                                    <a href="" class="anime-cover">
+                                        <img src="<%=thu.image_url%>" alt="" class = "cover-image">
+                                        <div class = "anime-title">
+                                            <%=thu.title%>                       
+                                        </div>   
+                                    </a>                             
+                                </div>
+                            <%})%>
+                        </div>                            
+                    </section>
+                <%}%>
+                <%if(friday.length > 0) {%>
+                    <section class="lodaded">
+                        <h2 class="headers-chart">Friday</h1>                            
+                        <div class="anime-list">  
+                            <%friday.forEach(function(fri){%>         
+                                <div class="anime-card">            
+                                    <a href="" class="anime-cover">
+                                        <img src="<%=fri.image_url%>" alt="" class = "cover-image">
+                                        <div class = "anime-title">
+                                            <%=fri.title%>                       
+                                        </div>   
+                                    </a>                             
+                                </div>
+                            <%})%>
+                        </div>                            
+                    </section>
+                <%}%>
+                <%if(saturday.length > 0) {%>
+                    <section class="lodaded">
+                        <h2 class="headers-chart">Saturday</h1>                            
+                        <div class="anime-list">   
+                            <%saturday.forEach(function(sat){%>        
+                                <div class="anime-card">            
+                                    <a href="" class="anime-cover">
+                                        <img src="<%=sat.image_url%>" alt="" class = "cover-image">
+                                        <div class = "anime-title">
+                                            <%=sat.title%>                       
+                                        </div>   
+                                    </a>                             
+                                </div>
+                            <%})%>
+                        </div>                            
+                    </section>
+                <%}%>
+                <%if(sunday.length > 0) {%>
+                    <section class="lodaded">
+                        <h2 class="headers-chart">Sunday</h1>                            
+                        <div class="anime-list">
+                            <%sunday.forEach(function(sun){%>           
+                                <div class="anime-card">            
+                                    <a href="" class="anime-cover">
+                                        <img src="<%=sun.image_url%>" alt="" class = "cover-image">
+                                        <div class = "anime-title">
+                                            <%=sun.title%>                       
+                                        </div>   
+                                    </a>                             
+                                </div>
+                            <%})%>
+                        </div>                            
+                    </section>
+                <%}%>
+            </div>
+        <%}%>
+    <%}%>
+</div>
+
+
+</body>
+</html>
+
+
+
+
+
